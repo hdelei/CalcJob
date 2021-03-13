@@ -70,7 +70,7 @@ namespace CalcJob
         }
         
         /// <summary>
-        /// TextBox validation
+        /// TextBox validation in regex
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
