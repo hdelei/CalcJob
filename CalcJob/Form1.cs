@@ -1,4 +1,5 @@
-﻿using CalcJob.Util;
+﻿using CalcJob.Properties;
+using CalcJob.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,6 +7,8 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CalcJob
@@ -38,7 +41,7 @@ namespace CalcJob
                 if (gridMetro.Rows[4].Cells[3].Value != null)
                 {
                     mAddTimeButton.Enabled = false;
-                    labelTimeTip1.Text = "Click Reload or F5 to start over again!";
+                    labelTimeTip1.Text = "Click clear or press F5 to start over again!";
                     return true;
                 }
             }
@@ -290,10 +293,23 @@ namespace CalcJob
 
             if (cellContent is null || cellContent.ToString() == "total")
                 return;
-
-            Clipboard.SetText(cellContent.ToString());
+            try
+            {
+                Clipboard.SetText(cellContent.ToString());
+                ShowClipboardIcon();                
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Error Message: {0}", ex.Message));
+            }            
         }
 
+        private async Task ShowClipboardIcon()
+        {
+            pictureBox1.Image = new Bitmap(Resources.copy_icon);
+            await Task.Delay(1000);
+            pictureBox1.Image = null;
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -337,6 +353,21 @@ namespace CalcJob
             {
                 reloadGrid_Click(sender, e);
             }
+        }
+
+        private void MinimizeLabel_MouseEnter(object sender, EventArgs e)
+        {
+            minimizeLabel.ForeColor = SystemColors.ButtonHighlight;
+        }
+
+        private void minimizeLabel_MouseLeave(object sender, EventArgs e)
+        {
+            minimizeLabel.ForeColor = Color.DodgerBlue;
+        }
+
+        private void minimizeLabel_MouseClick(object sender, MouseEventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
         }
     }
 }
