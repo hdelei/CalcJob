@@ -127,6 +127,7 @@
     <Content Include="assets\copy_icon.png" />
     <Content Include="assets\jobcalc.ico" />
     <Content Include="jobcalc.ico" />
+    <None Include="Resources\alarmclock.ttf" />
     <None Include="Resources\copy_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

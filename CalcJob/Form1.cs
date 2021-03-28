@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -316,14 +318,7 @@ namespace CalcJob
             this.AcceptButton = mAddTimeButton;
             mAddTimeButton.Click += watchClickWarning;
 
-            InstalledFontCollection installedFontCollection = new InstalledFontCollection();            
-            FontFamily[] fontFamilies = installedFontCollection.Families;
-            var fontFamily = fontFamilies.FirstOrDefault(x => x.Name.Equals("alarm clock"));
-
-            if (fontFamily != null)
-            {
-                timeBox.Font = new Font(fontFamily, 20, FontStyle.Bold);
-            }
+            ApplyAlarmClockFont(timeBox);            
 
             alwaysCheckBox.Checked = TopMost = UserSettings.AlwaysOnTop;
 
@@ -331,6 +326,49 @@ namespace CalcJob
             {
                 this.Location = Settings.Default.LatestPositon;
             }
+        }
+                
+        private void ApplyAlarmClockFont(MaskedTextBox timeBox)
+        {
+            PrivateFontCollection privateFont = new PrivateFontCollection();
+            Stream fontStream = new MemoryStream(Properties.Resources.alarmclock);
+            //create an unsafe memory block for the data
+            System.IntPtr data = Marshal.AllocCoTaskMem((int)fontStream.Length);
+            //create a buffer to read in to
+            Byte[] fontData = new Byte[fontStream.Length];
+            //fetch the font program from the resource
+            fontStream.Read(fontData, 0, (int)fontStream.Length);
+            //copy the bytes to the unsafe memory block
+            Marshal.Copy(fontData, 0, data, (int)fontStream.Length);
+
+            // We HAVE to do this to register the font to the system (Weird .NET bug !)
+            uint cFonts = 0;
+            AddFontMemResourceEx(data, (uint)fontData.Length, IntPtr.Zero, ref cFonts);
+
+            //pass the font to the font collection
+            privateFont.AddMemoryFont(data, (int)fontStream.Length);
+            //close the resource stream
+            fontStream.Close();
+            //free the unsafe memory
+            Marshal.FreeCoTaskMem(data);
+
+            if (privateFont.Families[0] != null)
+            {
+                timeBox.Font = new Font(privateFont.Families[0], 20, FontStyle.Bold);
+            }            
+
+            //InstalledFontCollection installedFontCollection = new InstalledFontCollection();
+            //FontFamily[] fontFamilies = installedFontCollection.Families;
+            //var fontFamily = fontFamilies.FirstOrDefault(x => x.Name.Equals("alarm clock"));
+
+            //if (fontFamily != null)
+            //{
+            //    timeBox.Font = new Font(fontFamily, 20, FontStyle.Bold);
+            //}
+            //else
+            //{
+            //    //install font from directory
+            //}
         }
 
         /// <summary>
@@ -382,5 +420,9 @@ namespace CalcJob
             Settings.Default.LatestPositon = this.Location;
             Settings.Default.Save();
         }
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
+
     }
 }
