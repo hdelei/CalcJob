@@ -277,7 +277,7 @@ namespace CalcJob
         /// <param name="e"></param>
         private void alwaysCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            this.TopMost = alwaysCheckBox.Checked;
+            TopMost = UserSettings.AlwaysOnTop = alwaysCheckBox.Checked;            
         }
 
         /// <summary>
@@ -323,7 +323,9 @@ namespace CalcJob
             if (fontFamily != null)
             {
                 timeBox.Font = new Font(fontFamily, 20, FontStyle.Bold);
-            }            
+            }
+
+            alwaysCheckBox.Checked = TopMost = UserSettings.AlwaysOnTop;            
         }
 
         /// <summary>
