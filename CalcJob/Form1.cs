@@ -325,7 +325,12 @@ namespace CalcJob
                 timeBox.Font = new Font(fontFamily, 20, FontStyle.Bold);
             }
 
-            alwaysCheckBox.Checked = TopMost = UserSettings.AlwaysOnTop;            
+            alwaysCheckBox.Checked = TopMost = UserSettings.AlwaysOnTop;
+
+            if (Settings.Default.LatestPositon != null)
+            {
+                this.Location = Settings.Default.LatestPositon;
+            }
         }
 
         /// <summary>
@@ -370,6 +375,12 @@ namespace CalcJob
         private void minimizeLabel_MouseClick(object sender, MouseEventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Settings.Default.LatestPositon = this.Location;
+            Settings.Default.Save();
         }
     }
 }
