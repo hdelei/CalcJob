@@ -35,6 +35,7 @@ namespace CalcJob
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.timeBox = new System.Windows.Forms.MaskedTextBox();
             this.reloadGrid = new MetroFramework.Controls.MetroLabel();
             this.closeForm = new MetroFramework.Controls.MetroLabel();
@@ -282,6 +283,7 @@ namespace CalcJob
             this.Controls.Add(this.timeBox);
             this.ForeColor = System.Drawing.SystemColors.ButtonShadow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "Calc Job Time";
