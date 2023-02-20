@@ -287,7 +287,7 @@ namespace CalcJob
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void gridMetro_CellClick(object sender, DataGridViewCellEventArgs e)
+        private async void gridMetro_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
             
@@ -298,7 +298,7 @@ namespace CalcJob
             try
             {
                 Clipboard.SetText(cellContent.ToString());
-                ShowClipboardIcon();                
+                await ShowClipboardIcon();                
             }
             catch (Exception ex)
             {
@@ -322,10 +322,12 @@ namespace CalcJob
 
             alwaysCheckBox.Checked = TopMost = UserSettings.AlwaysOnTop;
 
-            if (Settings.Default.LatestPositon != null)
-            {
-                this.Location = Settings.Default.LatestPositon;
-            }
+            var settings = Settings.Default;
+
+            if (settings.latestPosition != null && 
+                settings.screenCount == Screen.AllScreens.Count() && 
+                settings.screenSize == Screen.FromControl(this).Bounds.Size)                
+                this.Location = settings.latestPosition;
         }
                 
         private void ApplyAlarmClockFont(MaskedTextBox timeBox)
@@ -417,7 +419,11 @@ namespace CalcJob
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.Default.LatestPositon = this.Location;
+            var settings = Settings.Default;
+
+            settings.latestPosition = this.Location;            
+            settings.screenCount = Screen.AllScreens.Count();
+            settings.screenSize = Screen.FromControl(this).Bounds.Size;;
             Settings.Default.Save();
         }
 
